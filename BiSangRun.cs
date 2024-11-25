@@ -59,6 +59,8 @@ namespace WinFormsApp1
 	  this.processPoint = new Point(rect.Left, rect.Top);
 	  this.initialize = true;
 	  this.label1.Text = @"초기화 완료. 프로세스 크기나 위치를 옮기지 말 것 (다시 초기화 할 것)";
+
+	  // TODO 비상런 화면 아니면 초기화 실패하기 (귀찮아서 일단 뒀음)
 	}
 
 	private void button2_Click(object sender, EventArgs e)
@@ -108,8 +110,11 @@ namespace WinFormsApp1
 
 	private void SendMouseClick(int x, int y)
 	{
+	  // TODO 마우스가 가끔 씹혀서 더블클릭으로 했는데 그래도 씹힐 때가 있음
 	  IntPtr lParam = (IntPtr)((y << 16) | (x & 0xFFFF));
 	  SendMessage(this.processWindow, MouseOperations.Move, IntPtr.Zero, lParam);
+	  SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
+	  SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
 	  SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
 	  SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
 	}
