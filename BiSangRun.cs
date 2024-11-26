@@ -30,7 +30,7 @@ namespace WinFormsApp1
 
     public BiSangRun()
     {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -109,7 +109,7 @@ namespace WinFormsApp1
 
     private void SendMouseClick(int x, int y)
     {
-      // TODO 마우스가 가끔 씹혀서 더블클릭으로 했는데 그래도 씹힐 때가 있음
+      // TODO 마우스가 가끔 씹혀서 더블클릭으로 했는데 그래도 씹힐 때가 있음 개선 필요
       IntPtr lParam = (IntPtr)((y << 16) | (x & 0xFFFF));
       SendMessage(this.processWindow, MouseOperations.Move, IntPtr.Zero, lParam);
       SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
