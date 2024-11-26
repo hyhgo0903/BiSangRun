@@ -115,7 +115,7 @@
     private Button button2;
     private Label label1;
     private Label label2;
-	private Button button3;
+    private Button button3;
     private Button button4;
   }
 }
