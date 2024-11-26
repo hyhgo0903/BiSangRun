@@ -18,10 +18,6 @@ namespace WinFormsApp1
     [DllImport("user32.dll", EntryPoint = "WindowFromPoint", CharSet = CharSet.Auto, ExactSpelling = true)]
     private static extern IntPtr WindowFromPoint(Point point);
 
-    // 항상 위로
-    private const IntPtr HWndTopmost = -1;
-    private const uint NoMove = 0x0002;
-
     private IntPtr processWindow;
     private Point processPoint = new(0, 0);
     private IReadOnlyList<Image> images = Array.Empty<Image>();
@@ -53,7 +49,7 @@ namespace WinFormsApp1
 
       var process = processes[0];
       this.processWindow = process.MainWindowHandle;
-      SetWindowPos(this.processWindow, HWndTopmost, 0, 0, Constants.XWinSize, Constants.YWinSize, NoMove);
+      SetWindowPos(this.processWindow, Constants.HWndTopmost, 0, 0, Constants.XWinSize, Constants.YWinSize, Constants.NoMove);
       GetWindowRect(this.processWindow, out var rect);
       this.processPoint = new Point(rect.Left, rect.Top);
       this.initialize = true;
@@ -64,7 +60,7 @@ namespace WinFormsApp1
 
     private void button2_Click(object sender, EventArgs e)
     {
-      if (initialize is false)
+      if (this.initialize is false)
       {
         this.SetLabel2TextSafe(@"초기화 부터 해야 함");
         return;
@@ -160,6 +156,16 @@ namespace WinFormsApp1
       {
         this.label2.Text = txt;
       }
+    }
+
+    private void button4_Click(object sender, EventArgs e)
+    {
+      if (this.initialize is false)
+      {
+        return;
+      }
+
+      SetWindowPos(this.processWindow, Constants.HWndNoTopmost, 0, 0, 0, 0, Constants.NoMove | Constants.NoSize);
     }
   }
 }

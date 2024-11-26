@@ -2,6 +2,9 @@
 {
   public class Constants
   {
+    // 테스트를 완벽하게 할 때까진 적게.. +슬쩍 늘려봄
+    public const int MaxTrial = 20;
+
     // 이 기준으로 좌표를 설정했음
     public const int XWinSize = 1024;
     public const int YWinSize = 606;
@@ -12,8 +15,11 @@
     public const int DetermineXSize = 600;
     public const int DetermineYSize = 350;
 
-    // 테스트를 완벽하게 할 때까진 적게..
-    public const int MaxTrial = 10;
+    // 항상 위로
+    public const IntPtr HWndTopmost = -1;
+    public const IntPtr HWndNoTopmost = -2;
+    public const uint NoSize = 0x0001;
+    public const uint NoMove = 0x0002;
   }
 
   public class MouseOperations
