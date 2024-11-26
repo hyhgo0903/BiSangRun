@@ -15,11 +15,11 @@
     // 테스트를 완벽하게 할 때까진 적게..
     public const int MaxTrial = 10;
   }
-  
+
   public class MouseOperations
   {
     public const int Move = 0x0200;
-	public const int LeftDown = 0x0201;
+    public const int LeftDown = 0x0201;
     public const int LeftUp = 0x0202;
     public const int Wheel = 0x020A;
   }
