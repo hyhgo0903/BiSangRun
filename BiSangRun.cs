@@ -15,6 +15,7 @@ namespace BiSangRun
     [DllImport("user32.dll")]
     private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
+    private decimal maxTrialCount;
     private IntPtr processWindow;
     private Point processPoint = new(0, 0);
     private IReadOnlyList<Image> images = Array.Empty<Image>();
@@ -24,6 +25,7 @@ namespace BiSangRun
     public BiSangRun()
     {
       this.InitializeComponent();
+      this.maxTrialCount = this.numericUpDown1.Value;
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -69,10 +71,10 @@ namespace BiSangRun
 
     private void StartWhile()
     {
-      this.token = new();
+      this.token = new CancellationTokenSource();
       var count = 0;
 
-      while (count < Config.MaxTrial)
+      while (count < maxTrialCount)
       {
         if (this.token.IsCancellationRequested)
         {
@@ -162,7 +164,19 @@ namespace BiSangRun
         return;
       }
 
-      SetWindowPos(this.processWindow, Constants.HWndNoTopmost, 0, 0, 0, 0, Constants.NoMove | Constants.NoSize);
+      SetWindowPos(
+        this.processWindow,
+        Constants.HWndNoTopmost,
+        0,
+        0,
+        0,
+        0,
+        Constants.NoMove | Constants.NoSize);
+    }
+
+    private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+    {
+      this.maxTrialCount = this.numericUpDown1.Value;
     }
   }
 }
