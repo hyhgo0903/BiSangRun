@@ -1,4 +1,4 @@
-namespace WinFormsApp1
+namespace BiSangRun
 {
   internal static class Program
   {

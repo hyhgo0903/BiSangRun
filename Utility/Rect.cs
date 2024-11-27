@@ -1,4 +1,4 @@
-﻿namespace WinFormsApp1.Utility
+﻿namespace BiSangRun.Utility
 {
   public struct Rect
   {

@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using WinFormsApp1.Utility;
+using BiSangRun.Utility;
 
-namespace WinFormsApp1
+namespace BiSangRun
 {
   public partial class BiSangRun : Form
   {
@@ -13,10 +13,7 @@ namespace WinFormsApp1
     private static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
 
     [DllImport("user32.dll")]
-    private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("user32.dll", EntryPoint = "WindowFromPoint", CharSet = CharSet.Auto, ExactSpelling = true)]
-    private static extern IntPtr WindowFromPoint(Point point);
+    private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
     private IntPtr processWindow;
     private Point processPoint = new(0, 0);
@@ -33,9 +30,9 @@ namespace WinFormsApp1
     {
       var imageList = new[]
       {
-    Image.FromFile("Resources/성약.PNG"),
-    Image.FromFile("Resources/신비.PNG")
-    };
+        Image.FromFile("Resources/성약.PNG"),
+        Image.FromFile("Resources/신비.PNG")
+      };
 
       this.images = imageList;
 
@@ -67,7 +64,7 @@ namespace WinFormsApp1
       }
 
       this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창에 마우스오버하지 말 것!");
-      Task.Run(StartWhile);
+      Task.Run(this.StartWhile);
     }
 
     private void StartWhile()
@@ -75,7 +72,7 @@ namespace WinFormsApp1
       this.token = new();
       var count = 0;
 
-      while (count < Constants.MaxTrial)
+      while (count < Config.MaxTrial)
       {
         if (this.token.IsCancellationRequested)
         {
@@ -84,18 +81,18 @@ namespace WinFormsApp1
         }
 
         Thread.Sleep(10);
-        SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
+        this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
 
         Thread.Sleep(400);
-        SendMouseClick(Constants.DetermineXSize, Constants.DetermineYSize);
+        this.SendMouseClick(Constants.DetermineXSize, Constants.DetermineYSize);
 
         Thread.Sleep(600);
-        if (FindImage()) return;
+        if (this.FindImage()) return;
 
-        SendMouseWheel();
+        this.SendMouseWheel();
         Thread.Sleep(400);
 
-        if (FindImage()) return;
+        if (this.FindImage()) return;
 
         ++count;
       }
@@ -106,7 +103,7 @@ namespace WinFormsApp1
     private void SendMouseClick(int x, int y)
     {
       // TODO 마우스가 가끔 씹혀서 더블클릭으로 했는데 그래도 씹힐 때가 있음 개선 필요
-      IntPtr lParam = (IntPtr)((y << 16) | (x & 0xFFFF));
+      IntPtr lParam = ((y << 16) | (x & 0xFFFF));
       SendMessage(this.processWindow, MouseOperations.Move, IntPtr.Zero, lParam);
       SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
       SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
@@ -117,7 +114,7 @@ namespace WinFormsApp1
     private void SendMouseWheel()
     {
       int wheelDelta = -360; // 휠 내리기: 음수 값
-      IntPtr wParam = (IntPtr)((wheelDelta & 0xFFFF) << 16);
+      IntPtr wParam = ((wheelDelta & 0xFFFF) << 16);
       SendMessage(this.processWindow, MouseOperations.Wheel, wParam, IntPtr.Zero);
     }
 
@@ -125,12 +122,12 @@ namespace WinFormsApp1
     {
       ImageFinderNS.ImageFinder.SetSource(
       ImageFinderNS.ImageFinder.MakeScreenshot(new Rectangle(
-        processPoint.X,
-        processPoint.Y,
+        this.processPoint.X,
+        this.processPoint.Y,
         Constants.XWinSize,
         Constants.YWinSize)));
 
-      if (images
+      if (this.images
         .Select(image => ImageFinderNS.ImageFinder.Find(image, 0.8f))
         .Any(finds => finds.Count > 0))
       {

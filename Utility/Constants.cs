@@ -1,10 +1,7 @@
-﻿namespace WinFormsApp1.Utility
+﻿namespace BiSangRun.Utility
 {
   public class Constants
   {
-    // 테스트를 완벽하게 할 때까진 적게.. +슬쩍 늘려봄
-    public const int MaxTrial = 20;
-
     // 이 기준으로 좌표를 설정했음
     public const int XWinSize = 1024;
     public const int YWinSize = 606;
