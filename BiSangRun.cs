@@ -76,6 +76,8 @@ namespace BiSangRun
 
       while (this.trialCount < this.maxTrialCount)
       {
+        ++this.trialCount;
+
         if (this.token.IsCancellationRequested)
         {
           this.SetLabel2TextSafe(@"중지 됨.");
@@ -90,17 +92,21 @@ namespace BiSangRun
         this.SendMouseClick(Constants.DetermineXSize, Constants.DetermineYSize);
 
         Thread.Sleep(600);
-        if (this.FindImage()) return;
+        if (this.FindImage())
+        {
+          return;
+        }
 
         this.SendMouseWheel();
         Thread.Sleep(400);
 
-        if (this.FindImage()) return;
-
-        ++this.trialCount;
+        if (this.FindImage())
+        {
+          return;
+        }
       }
 
-      this.SetLabel2TextSafe(@$"실행 완료.");
+      this.SetLabel2TextSafe(@"실행 완료.");
     }
 
     private void SendMouseClick(int x, int y)
@@ -148,7 +154,7 @@ namespace BiSangRun
 
     private void SetLabel2TextSafe(string txt)
     {
-      var appendedTxt = $"{txt} {this.trialCount + 1} / {this.maxTrialCount}";
+      var appendedTxt = $"{txt} {this.trialCount} / {this.maxTrialCount}";
       if (this.label2.InvokeRequired)
       {
         this.label2.Invoke(new Action(() => this.label2.Text = appendedTxt));
