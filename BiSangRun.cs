@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using BiSangRun.Utility;
+using ImageFinderNS;
 
 namespace BiSangRun
 {
@@ -52,10 +53,24 @@ namespace BiSangRun
       SetWindowPos(this.processWindow, Constants.HWndTopmost, 0, 0, Constants.XWinSize, Constants.YWinSize, Constants.NoMove);
       GetWindowRect(this.processWindow, out var rect);
       this.processPoint = new Point(rect.Left, rect.Top);
+
+      var checkImage = Image.FromFile("Resources/비상화면체크용.PNG");
+      ImageFinder.SetSource(
+        ImageFinder.MakeScreenshot(new Rectangle(
+          this.processPoint.X,
+          this.processPoint.Y,
+          Constants.XWinSize,
+          Constants.YWinSize)));
+
+      var finds = ImageFinder.Find(checkImage, 0.8f);
+      if (finds.Count < 1)
+      {
+        this.label1.Text = @"초기화 실패. 비밀상점 화면이 아님";
+        return;
+      }
+
       this.initialize = true;
       this.label1.Text = @"초기화 완료. 프로세스 크기나 위치를 옮기지 말 것 (다시 초기화 할 것)";
-
-      // TODO 비상런 화면 아니면 초기화 실패하기 (귀찮아서 일단 뒀음)
     }
 
     private void button2_Click(object sender, EventArgs e)
@@ -129,15 +144,15 @@ namespace BiSangRun
 
     private bool FindImage()
     {
-      ImageFinderNS.ImageFinder.SetSource(
-      ImageFinderNS.ImageFinder.MakeScreenshot(new Rectangle(
-        this.processPoint.X,
-        this.processPoint.Y,
-        Constants.XWinSize,
-        Constants.YWinSize)));
+      ImageFinder.SetSource(
+        ImageFinder.MakeScreenshot(new Rectangle(
+          this.processPoint.X,
+          this.processPoint.Y,
+          Constants.XWinSize,
+          Constants.YWinSize)));
 
       if (this.images
-        .Select(image => ImageFinderNS.ImageFinder.Find(image, 0.8f))
+        .Select(image => ImageFinder.Find(image, 0.8f))
         .Any(finds => finds.Count > 0))
       {
         this.SetLabel2TextSafe(@"발견!");
