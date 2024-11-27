@@ -15,6 +15,7 @@ namespace BiSangRun
     [DllImport("user32.dll")]
     private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
+    private int trialCount;
     private decimal maxTrialCount;
     private IntPtr processWindow;
     private Point processPoint = new(0, 0);
@@ -65,23 +66,23 @@ namespace BiSangRun
         return;
       }
 
-      this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창에 마우스오버하지 말 것!");
       Task.Run(this.StartWhile);
     }
 
     private void StartWhile()
     {
       this.token = new CancellationTokenSource();
-      var count = 0;
+      this.trialCount = 0;
 
-      while (count < maxTrialCount)
+      while (this.trialCount < this.maxTrialCount)
       {
         if (this.token.IsCancellationRequested)
         {
-          this.SetLabel2TextSafe(@"중지 됨");
+          this.SetLabel2TextSafe(@"중지 됨.");
           return;
         }
 
+        this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창에 마우스오버하지 말 것!");
         Thread.Sleep(10);
         this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
 
@@ -96,10 +97,10 @@ namespace BiSangRun
 
         if (this.FindImage()) return;
 
-        ++count;
+        ++this.trialCount;
       }
 
-      this.SetLabel2TextSafe(@"실행 완료");
+      this.SetLabel2TextSafe(@$"실행 완료.");
     }
 
     private void SendMouseClick(int x, int y)
@@ -147,13 +148,14 @@ namespace BiSangRun
 
     private void SetLabel2TextSafe(string txt)
     {
+      var appendedTxt = $"{txt} {this.trialCount + 1} / {this.maxTrialCount}";
       if (this.label2.InvokeRequired)
       {
-        this.label2.Invoke(new Action(() => this.label2.Text = txt));
+        this.label2.Invoke(new Action(() => this.label2.Text = appendedTxt));
       }
       else
       {
-        this.label2.Text = txt;
+        this.label2.Text = appendedTxt;
       }
     }
 
