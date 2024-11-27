@@ -19,7 +19,7 @@ namespace BiSangRun
     private int trialCount;
     private decimal maxTrialCount;
     private IntPtr processWindow;
-    private Point processPoint = new(0, 0);
+    private Rectangle processRect;
     private IReadOnlyList<Image> images = Array.Empty<Image>();
     private bool initialize;
     private CancellationTokenSource token = new();
@@ -50,18 +50,22 @@ namespace BiSangRun
 
       var process = processes[0];
       this.processWindow = process.MainWindowHandle;
-      SetWindowPos(this.processWindow, Constants.HWndTopmost, 0, 0, Constants.XWinSize, Constants.YWinSize, Constants.NoMove);
+
+      // 특정 해상도로 변경시킴
+      SetWindowPos(
+        this.processWindow,
+        Constants.HWndTopmost,
+        0,
+        0,
+        Constants.XWinSize,
+        Constants.YWinSize,
+        Constants.NoMove);
+
       GetWindowRect(this.processWindow, out var rect);
-      this.processPoint = new Point(rect.Left, rect.Top);
+      this.processRect = Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
 
       var checkImage = Image.FromFile("Resources/비상화면체크용.PNG");
-      ImageFinder.SetSource(
-        ImageFinder.MakeScreenshot(new Rectangle(
-          this.processPoint.X,
-          this.processPoint.Y,
-          Constants.XWinSize,
-          Constants.YWinSize)));
-
+      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.processRect));
       var finds = ImageFinder.Find(checkImage, 0.8f);
       if (finds.Count < 1)
       {
@@ -144,12 +148,7 @@ namespace BiSangRun
 
     private bool FindImage()
     {
-      ImageFinder.SetSource(
-        ImageFinder.MakeScreenshot(new Rectangle(
-          this.processPoint.X,
-          this.processPoint.Y,
-          Constants.XWinSize,
-          Constants.YWinSize)));
+      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.processRect));
 
       if (this.images
         .Select(image => ImageFinder.Find(image, 0.8f))
