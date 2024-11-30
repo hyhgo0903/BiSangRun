@@ -100,7 +100,10 @@
       // 
       // numericUpDown1
       // 
+      this.numericUpDown1.Increment = new decimal(new int[] { 10, 0, 0, 0 });
       this.numericUpDown1.Location = new Point(167, 153);
+      this.numericUpDown1.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
+      this.numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
       this.numericUpDown1.Name = "numericUpDown1";
       this.numericUpDown1.Size = new Size(75, 23);
       this.numericUpDown1.TabIndex = 7;
@@ -118,7 +121,6 @@
       // 
       // pictureBox1
       // 
-      this.pictureBox1.Image = Image.FromFile("Resources/대기화면.PNG");
       this.pictureBox1.Location = new Point(507, 151);
       this.pictureBox1.Name = "pictureBox1";
       this.pictureBox1.Size = new Size(175, 50);
