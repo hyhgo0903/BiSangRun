@@ -80,7 +80,7 @@
       // 
       // button3
       // 
-      this.button3.Location = new Point(590, 93);
+      this.button3.Location = new Point(573, 93);
       this.button3.Name = "button3";
       this.button3.Size = new Size(75, 23);
       this.button3.TabIndex = 5;
@@ -90,7 +90,7 @@
       // 
       // button4
       // 
-      this.button4.Location = new Point(576, 34);
+      this.button4.Location = new Point(559, 34);
       this.button4.Name = "button4";
       this.button4.Size = new Size(106, 23);
       this.button4.TabIndex = 6;
@@ -131,7 +131,7 @@
       // 
       AutoScaleDimensions = new SizeF(7F, 15F);
       AutoScaleMode = AutoScaleMode.Font;
-      ClientSize = new Size(703, 213);
+      ClientSize = new Size(690, 213);
       Controls.Add(this.pictureBox1);
       Controls.Add(this.label3);
       Controls.Add(this.numericUpDown1);

@@ -74,7 +74,7 @@ namespace BiSangRun
       }
 
       this.initialize = true;
-      this.label1.Text = @"초기화 완료. 프로세스 크기나 위치를 옮기지 말 것 (다시 초기화 할 것)";
+      this.label1.Text = @"초기화 완료. 에픽세븐 창크기를 바꾸지 말 것 (다시 초기화 필요)";
     }
 
     private void button2_Click(object sender, EventArgs e)
