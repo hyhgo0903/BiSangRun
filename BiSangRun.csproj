@@ -47,7 +47,7 @@
     <None Update="Resources\신비.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\대기화면.png">
+    <None Update="Resources\대기화면.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

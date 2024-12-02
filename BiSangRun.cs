@@ -28,6 +28,7 @@ namespace BiSangRun
     {
       this.InitializeComponent();
       this.maxTrialCount = this.numericUpDown1.Value;
+      this.pictureBox1.Image = Image.FromFile("Resources/대기화면.PNG");
     }
 
     private void button1_Click(object sender, EventArgs e)
