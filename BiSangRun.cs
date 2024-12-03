@@ -21,7 +21,7 @@ namespace BiSangRun
     private int trialCount;
     private decimal maxTrialCount;
     private IntPtr processWindow;
-    private Rectangle processRect;
+    private Rectangle imageRect;
     private readonly IReadOnlyList<ImageGameData> imageGameDataList;
     private bool initialize;
     private CancellationTokenSource token = new();
@@ -37,7 +37,9 @@ namespace BiSangRun
       {
         new ImageGameData("Resources/성약.PNG", "성약", 0.8f, false),
         new ImageGameData("Resources/신비.PNG", "신비", 0.8f, false),
-        new ImageGameData("Resources/85제장비.PNG", "85제장비", 0.95f, true),
+        // 이거 하나 갖고 제대로 안 찾아준다 일단은 표본 2개로 해봄
+        new ImageGameData("Resources/85제장비.PNG", "85제장비", 0.94f, true),
+        new ImageGameData("Resources/85제장비2.PNG", "85제장비", 0.94f, true),
       };
 
       this.imageGameDataList = imageList;
@@ -73,10 +75,10 @@ namespace BiSangRun
         Constants.NoMove);
 
       GetWindowRect(this.processWindow, out var rect);
-      this.processRect = Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
+      var processRect = Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
 
       var checkImage = Image.FromFile("Resources/비상화면체크용.PNG");
-      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.processRect));
+      ImageFinder.SetSource(ImageFinder.MakeScreenshot(processRect));
       var finds = ImageFinder.Find(checkImage, 0.8f);
       if (finds.Count < 1)
       {
@@ -85,7 +87,7 @@ namespace BiSangRun
       }
 
       this.initialize = true;
-      this.label1.Text = @"초기화 완료. 에픽세븐 창크기를 바꾸지 말 것 (다시 초기화 필요)";
+      this.label1.Text = @"초기화 완료. 에픽세븐 창 크기를 바꾸지 말 것 (다시 초기화 필요)";
     }
 
     private void button2_Click(object sender, EventArgs e)
@@ -96,6 +98,7 @@ namespace BiSangRun
         return;
       }
 
+      this.SetImageRect();
       Task.Run(this.StartWhile);
     }
 
@@ -114,7 +117,7 @@ namespace BiSangRun
           return;
         }
 
-        this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창에 마우스오버하지 말 것!");
+        this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창을 옮기거나 마우스오버하지 말 것!");
         Thread.Sleep(10);
         this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
 
@@ -152,7 +155,7 @@ namespace BiSangRun
 
     private bool FindImage()
     {
-      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.processRect));
+      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.imageRect));
 
       foreach (var gameData in this.imageGameDataList)
       {
@@ -217,6 +220,27 @@ namespace BiSangRun
     private void numericUpDown1_ValueChanged(object sender, EventArgs e)
     {
       this.maxTrialCount = this.maximumNumericUpDown.Value;
+    }
+
+    private void mainPictureBox_Click(object sender, EventArgs e)
+    {
+      if (this.initialize is false)
+      {
+        return;
+      }
+
+      this.SetImageRect();
+      if (this.FindImage() is false)
+      {
+        this.SetLabel2TextSafe(@"[Debug] 이미지 검색 되지 않음");
+      }
+    }
+
+    private void SetImageRect()
+    {
+      GetWindowRect(this.processWindow, out var rect);
+      // 성능을 위해 최대한 줄인다
+      this.imageRect = Rectangle.FromLTRB(rect.Left + 400, rect.Top, rect.Right, rect.Bottom);
     }
   }
 }

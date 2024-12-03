@@ -128,6 +128,7 @@
       this.mainPictureBox.Size = new Size(175, 50);
       this.mainPictureBox.TabIndex = 9;
       this.mainPictureBox.TabStop = false;
+      this.mainPictureBox.Click += this.mainPictureBox_Click;
       // 
       // includeCheckBox
       // 
