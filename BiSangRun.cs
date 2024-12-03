@@ -1,7 +1,8 @@
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using BiSangRun.GameData;
 using BiSangRun.Utility;
 using ImageFinderNS;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace BiSangRun
 {
@@ -20,7 +21,7 @@ namespace BiSangRun
     private decimal maxTrialCount;
     private IntPtr processWindow;
     private Rectangle processRect;
-    private IReadOnlyList<Image> images = Array.Empty<Image>();
+    private readonly IReadOnlyList<ImageGameData> imageGameDataList;
     private bool initialize;
     private CancellationTokenSource token = new();
 
@@ -29,18 +30,19 @@ namespace BiSangRun
       this.InitializeComponent();
       this.maxTrialCount = this.numericUpDown1.Value;
       this.pictureBox1.Image = Image.FromFile("Resources/대기화면.PNG");
+
+      var imageList = new[]
+      {
+        new ImageGameData("Resources/성약.PNG", "성약", 0.8f, false),
+        new ImageGameData("Resources/신비.PNG", "신비", 0.8f, false),
+        new ImageGameData("Resources/85제장비.PNG", "85제장비", 0.95f, true),
+      };
+
+      this.imageGameDataList = imageList;
     }
 
     private void button1_Click(object sender, EventArgs e)
     {
-      var imageList = new[]
-      {
-        Image.FromFile("Resources/성약.PNG"),
-        Image.FromFile("Resources/신비.PNG")
-      };
-
-      this.images = imageList;
-
       // Pc런처 기준임
       var processes = Process.GetProcessesByName("EpicSeven");
       if (processes.Length != 1)
@@ -117,7 +119,7 @@ namespace BiSangRun
           return;
         }
 
-        this.SendMouseWheel();
+        SendMessage(this.processWindow, MouseOperations.Wheel, Constants.WParam, IntPtr.Zero);
         Thread.Sleep(400);
 
         if (this.FindImage())
@@ -140,23 +142,23 @@ namespace BiSangRun
       SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
     }
 
-    private void SendMouseWheel()
-    {
-      int wheelDelta = -360; // 휠 내리기: 음수 값
-      IntPtr wParam = ((wheelDelta & 0xFFFF) << 16);
-      SendMessage(this.processWindow, MouseOperations.Wheel, wParam, IntPtr.Zero);
-    }
-
     private bool FindImage()
     {
       ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.processRect));
 
-      if (this.images
-        .Select(image => ImageFinder.Find(image, 0.8f))
-        .Any(finds => finds.Count > 0))
+      foreach (var gameData in this.imageGameDataList)
       {
-        this.SetLabel2TextSafe(@"발견!");
-        return true;
+        if (this.checkBox1.Checked && gameData.CanIgnore)
+        {
+          continue;
+        }
+
+        var finds = ImageFinder.Find(gameData.Image, gameData.Similarity);
+        if (finds.Count > 0)
+        {
+          this.SetLabel2TextSafe(@$"{gameData.Name} 발견!");
+          return true;
+        }
       }
 
       return false;

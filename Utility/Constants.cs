@@ -12,6 +12,8 @@
     public const int DetermineXSize = 600;
     public const int DetermineYSize = 350;
 
+    public const IntPtr WParam = (-400 & 0xFFFF) << 16;
+
     // 항상 위로
     public const IntPtr HWndTopmost = -1;
     public const IntPtr HWndNoTopmost = -2;

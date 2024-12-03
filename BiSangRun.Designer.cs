@@ -37,6 +37,7 @@
       this.numericUpDown1 = new NumericUpDown();
       this.label3 = new Label();
       this.pictureBox1 = new PictureBox();
+      this.checkBox1 = new CheckBox();
       ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).BeginInit();
       ((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
       this.SuspendLayout();
@@ -127,11 +128,22 @@
       this.pictureBox1.TabIndex = 9;
       this.pictureBox1.TabStop = false;
       // 
+      // checkBox1
+      // 
+      this.checkBox1.AutoSize = true;
+      this.checkBox1.Location = new Point(285, 157);
+      this.checkBox1.Name = "checkBox1";
+      this.checkBox1.Size = new Size(108, 19);
+      this.checkBox1.TabIndex = 10;
+      this.checkBox1.Text = "85제 검색 제외";
+      this.checkBox1.UseVisualStyleBackColor = true;
+      // 
       // BiSangRun
       // 
       AutoScaleDimensions = new SizeF(7F, 15F);
       AutoScaleMode = AutoScaleMode.Font;
       ClientSize = new Size(690, 213);
+      Controls.Add(this.checkBox1);
       Controls.Add(this.pictureBox1);
       Controls.Add(this.label3);
       Controls.Add(this.numericUpDown1);
@@ -159,5 +171,6 @@
     private NumericUpDown numericUpDown1;
     private Label label3;
     private PictureBox pictureBox1;
+    private CheckBox checkBox1;
   }
 }
