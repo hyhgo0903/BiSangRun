@@ -28,39 +28,40 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.button1 = new Button();
-      this.button2 = new Button();
+      this.initializeButton = new Button();
+      this.startButton = new Button();
       this.label1 = new Label();
       this.label2 = new Label();
-      this.button3 = new Button();
-      this.button4 = new Button();
-      this.numericUpDown1 = new NumericUpDown();
-      this.label3 = new Label();
-      this.pictureBox1 = new PictureBox();
-      this.checkBox1 = new CheckBox();
-      ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
+      this.stopButton = new Button();
+      this.releaseTopButton = new Button();
+      this.maximumNumericUpDown = new NumericUpDown();
+      this.maximumLabel = new Label();
+      this.mainPictureBox = new PictureBox();
+      this.includeCheckBox = new CheckBox();
+      this.soundCheckBox = new CheckBox();
+      ((System.ComponentModel.ISupportInitialize)this.maximumNumericUpDown).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)this.mainPictureBox).BeginInit();
       this.SuspendLayout();
       // 
-      // button1
+      // initializeButton
       // 
-      this.button1.Location = new Point(80, 34);
-      this.button1.Name = "button1";
-      this.button1.Size = new Size(75, 23);
-      this.button1.TabIndex = 1;
-      this.button1.Text = "초기화";
-      this.button1.UseVisualStyleBackColor = true;
-      this.button1.Click += this.button1_Click;
+      this.initializeButton.Location = new Point(80, 34);
+      this.initializeButton.Name = "initializeButton";
+      this.initializeButton.Size = new Size(75, 23);
+      this.initializeButton.TabIndex = 1;
+      this.initializeButton.Text = "초기화";
+      this.initializeButton.UseVisualStyleBackColor = true;
+      this.initializeButton.Click += this.button1_Click;
       // 
-      // button2
+      // startButton
       // 
-      this.button2.Location = new Point(80, 93);
-      this.button2.Name = "button2";
-      this.button2.Size = new Size(75, 23);
-      this.button2.TabIndex = 2;
-      this.button2.Text = "실행";
-      this.button2.UseVisualStyleBackColor = true;
-      this.button2.Click += this.button2_Click;
+      this.startButton.Location = new Point(80, 93);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new Size(75, 23);
+      this.startButton.TabIndex = 2;
+      this.startButton.Text = "실행";
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += this.button2_Click;
       // 
       // label1
       // 
@@ -79,98 +80,114 @@
       this.label2.Size = new Size(0, 15);
       this.label2.TabIndex = 4;
       // 
-      // button3
+      // stopButton
       // 
-      this.button3.Location = new Point(573, 93);
-      this.button3.Name = "button3";
-      this.button3.Size = new Size(75, 23);
-      this.button3.TabIndex = 5;
-      this.button3.Text = "중지";
-      this.button3.UseVisualStyleBackColor = true;
-      this.button3.Click += this.button3_Click;
+      this.stopButton.Location = new Point(573, 93);
+      this.stopButton.Name = "stopButton";
+      this.stopButton.Size = new Size(75, 23);
+      this.stopButton.TabIndex = 5;
+      this.stopButton.Text = "중지";
+      this.stopButton.UseVisualStyleBackColor = true;
+      this.stopButton.Click += this.button3_Click;
       // 
-      // button4
+      // releaseTopButton
       // 
-      this.button4.Location = new Point(559, 34);
-      this.button4.Name = "button4";
-      this.button4.Size = new Size(106, 23);
-      this.button4.TabIndex = 6;
-      this.button4.Text = "항상 위 해제";
-      this.button4.UseVisualStyleBackColor = true;
-      this.button4.Click += this.button4_Click;
+      this.releaseTopButton.Location = new Point(559, 34);
+      this.releaseTopButton.Name = "releaseTopButton";
+      this.releaseTopButton.Size = new Size(106, 23);
+      this.releaseTopButton.TabIndex = 6;
+      this.releaseTopButton.Text = "항상 위 해제";
+      this.releaseTopButton.UseVisualStyleBackColor = true;
+      this.releaseTopButton.Click += this.button4_Click;
       // 
-      // numericUpDown1
+      // maximumNumericUpDown
       // 
-      this.numericUpDown1.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-      this.numericUpDown1.Location = new Point(167, 153);
-      this.numericUpDown1.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
-      this.numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-      this.numericUpDown1.Name = "numericUpDown1";
-      this.numericUpDown1.Size = new Size(75, 23);
-      this.numericUpDown1.TabIndex = 7;
-      this.numericUpDown1.Value = new decimal(new int[] { 30, 0, 0, 0 });
-      this.numericUpDown1.ValueChanged += this.numericUpDown1_ValueChanged;
+      this.maximumNumericUpDown.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+      this.maximumNumericUpDown.Location = new Point(167, 153);
+      this.maximumNumericUpDown.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
+      this.maximumNumericUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+      this.maximumNumericUpDown.Name = "maximumNumericUpDown";
+      this.maximumNumericUpDown.Size = new Size(75, 23);
+      this.maximumNumericUpDown.TabIndex = 7;
+      this.maximumNumericUpDown.Value = new decimal(new int[] { 30, 0, 0, 0 });
+      this.maximumNumericUpDown.ValueChanged += this.numericUpDown1_ValueChanged;
       // 
-      // label3
+      // maximumLabel
       // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new Point(50, 155);
-      this.label3.Name = "label3";
-      this.label3.Size = new Size(111, 15);
-      this.label3.TabIndex = 8;
-      this.label3.Text = "최대 실행횟수 제한";
+      this.maximumLabel.AutoSize = true;
+      this.maximumLabel.Location = new Point(50, 155);
+      this.maximumLabel.Name = "maximumLabel";
+      this.maximumLabel.Size = new Size(111, 15);
+      this.maximumLabel.TabIndex = 8;
+      this.maximumLabel.Text = "최대 실행횟수 제한";
       // 
-      // pictureBox1
+      // mainPictureBox
       // 
-      this.pictureBox1.Location = new Point(507, 151);
-      this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new Size(175, 50);
-      this.pictureBox1.TabIndex = 9;
-      this.pictureBox1.TabStop = false;
+      this.mainPictureBox.Location = new Point(507, 151);
+      this.mainPictureBox.Name = "mainPictureBox";
+      this.mainPictureBox.Size = new Size(175, 50);
+      this.mainPictureBox.TabIndex = 9;
+      this.mainPictureBox.TabStop = false;
       // 
-      // checkBox1
+      // includeCheckBox
       // 
-      this.checkBox1.AutoSize = true;
-      this.checkBox1.Location = new Point(285, 157);
-      this.checkBox1.Name = "checkBox1";
-      this.checkBox1.Size = new Size(108, 19);
-      this.checkBox1.TabIndex = 10;
-      this.checkBox1.Text = "85제 검색 제외";
-      this.checkBox1.UseVisualStyleBackColor = true;
+      this.includeCheckBox.AutoSize = true;
+      this.includeCheckBox.Checked = true;
+      this.includeCheckBox.CheckState = CheckState.Checked;
+      this.includeCheckBox.Location = new Point(285, 157);
+      this.includeCheckBox.Name = "includeCheckBox";
+      this.includeCheckBox.Size = new Size(80, 19);
+      this.includeCheckBox.TabIndex = 10;
+      this.includeCheckBox.Text = "85제 검색";
+      this.includeCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // soundCheckBox
+      // 
+      this.soundCheckBox.AutoSize = true;
+      this.soundCheckBox.Checked = true;
+      this.soundCheckBox.CheckState = CheckState.Checked;
+      this.soundCheckBox.Location = new Point(285, 182);
+      this.soundCheckBox.Name = "soundCheckBox";
+      this.soundCheckBox.Size = new Size(62, 19);
+      this.soundCheckBox.TabIndex = 11;
+      this.soundCheckBox.Text = "사운드";
+      this.soundCheckBox.UseVisualStyleBackColor = true;
       // 
       // BiSangRun
       // 
       AutoScaleDimensions = new SizeF(7F, 15F);
       AutoScaleMode = AutoScaleMode.Font;
       ClientSize = new Size(690, 213);
-      Controls.Add(this.checkBox1);
-      Controls.Add(this.pictureBox1);
-      Controls.Add(this.label3);
-      Controls.Add(this.numericUpDown1);
-      Controls.Add(this.button4);
-      Controls.Add(this.button3);
+      Controls.Add(this.soundCheckBox);
+      Controls.Add(this.includeCheckBox);
+      Controls.Add(this.mainPictureBox);
+      Controls.Add(this.maximumLabel);
+      Controls.Add(this.maximumNumericUpDown);
+      Controls.Add(this.releaseTopButton);
+      Controls.Add(this.stopButton);
       Controls.Add(this.label2);
       Controls.Add(this.label1);
-      Controls.Add(this.button2);
-      Controls.Add(this.button1);
+      Controls.Add(this.startButton);
+      Controls.Add(this.initializeButton);
       Name = "BiSangRun";
       Text = "비이이이상!";
-      ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).EndInit();
-      ((System.ComponentModel.ISupportInitialize)this.pictureBox1).EndInit();
+      ((System.ComponentModel.ISupportInitialize)this.maximumNumericUpDown).EndInit();
+      ((System.ComponentModel.ISupportInitialize)this.mainPictureBox).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
     }
 
     #endregion
-    private Button button1;
-    private Button button2;
+    private Button initializeButton;
+    private Button startButton;
     private Label label1;
     private Label label2;
-    private Button button3;
-    private Button button4;
-    private NumericUpDown numericUpDown1;
-    private Label label3;
-    private PictureBox pictureBox1;
-    private CheckBox checkBox1;
+    private Button stopButton;
+    private Button releaseTopButton;
+    private NumericUpDown maximumNumericUpDown;
+    private Label maximumLabel;
+    private PictureBox mainPictureBox;
+    private CheckBox includeCheckBox;
+    private CheckBox soundCheckBox;
   }
 }

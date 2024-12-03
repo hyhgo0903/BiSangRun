@@ -30,8 +30,8 @@ namespace BiSangRun
     public BiSangRun()
     {
       this.InitializeComponent();
-      this.maxTrialCount = this.numericUpDown1.Value;
-      this.pictureBox1.Image = Image.FromFile("Resources/대기화면.PNG");
+      this.maxTrialCount = this.maximumNumericUpDown.Value;
+      this.mainPictureBox.Image = Image.FromFile("Resources/대기화면.PNG");
 
       var imageList = new[]
       {
@@ -156,7 +156,7 @@ namespace BiSangRun
 
       foreach (var gameData in this.imageGameDataList)
       {
-        if (this.checkBox1.Checked && gameData.CanIgnore)
+        if (this.includeCheckBox.Checked is false && gameData.CanSkip)
         {
           continue;
         }
@@ -166,7 +166,12 @@ namespace BiSangRun
         {
           var text = @$"{gameData.Name} 발견!";
           this.SetLabel2TextSafe(text);
-          this.speechSynthesizer.Speak(text);
+
+          if (this.soundCheckBox.Checked)
+          {
+            this.speechSynthesizer.Speak(text);
+          }
+
           return true;
         }
       }
@@ -211,7 +216,7 @@ namespace BiSangRun
 
     private void numericUpDown1_ValueChanged(object sender, EventArgs e)
     {
-      this.maxTrialCount = this.numericUpDown1.Value;
+      this.maxTrialCount = this.maximumNumericUpDown.Value;
     }
   }
 }
