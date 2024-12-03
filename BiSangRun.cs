@@ -3,6 +3,7 @@ using BiSangRun.Utility;
 using ImageFinderNS;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Speech.Synthesis;
 
 namespace BiSangRun
 {
@@ -24,6 +25,7 @@ namespace BiSangRun
     private readonly IReadOnlyList<ImageGameData> imageGameDataList;
     private bool initialize;
     private CancellationTokenSource token = new();
+    private readonly SpeechSynthesizer speechSynthesizer;
 
     public BiSangRun()
     {
@@ -39,6 +41,12 @@ namespace BiSangRun
       };
 
       this.imageGameDataList = imageList;
+
+      this.speechSynthesizer = new SpeechSynthesizer();
+      speechSynthesizer.SetOutputToDefaultAudioDevice();
+      speechSynthesizer.Volume = 100;
+      // 한국어 지원은 Heami 만 가능, 없어도 됨, 있으면 오류 나는경우가 있는거 같음
+      speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -156,7 +164,9 @@ namespace BiSangRun
         var finds = ImageFinder.Find(gameData.Image, gameData.Similarity);
         if (finds.Count > 0)
         {
-          this.SetLabel2TextSafe(@$"{gameData.Name} 발견!");
+          var text = @$"{gameData.Name} 발견!";
+          this.SetLabel2TextSafe(text);
+          this.speechSynthesizer.Speak(text);
           return true;
         }
       }
