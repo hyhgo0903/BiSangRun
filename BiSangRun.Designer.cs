@@ -45,7 +45,7 @@
       // 
       // initializeButton
       // 
-      this.initializeButton.Location = new Point(80, 34);
+      this.initializeButton.Location = new Point(41, 34);
       this.initializeButton.Name = "initializeButton";
       this.initializeButton.Size = new Size(75, 23);
       this.initializeButton.TabIndex = 1;
@@ -55,7 +55,7 @@
       // 
       // startButton
       // 
-      this.startButton.Location = new Point(80, 93);
+      this.startButton.Location = new Point(41, 93);
       this.startButton.Name = "startButton";
       this.startButton.Size = new Size(75, 23);
       this.startButton.TabIndex = 2;
@@ -66,7 +66,7 @@
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new Point(161, 38);
+      this.label1.Location = new Point(122, 38);
       this.label1.Name = "label1";
       this.label1.Size = new Size(163, 15);
       this.label1.TabIndex = 3;
@@ -75,7 +75,7 @@
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new Point(161, 97);
+      this.label2.Location = new Point(122, 97);
       this.label2.Name = "label2";
       this.label2.Size = new Size(0, 15);
       this.label2.TabIndex = 4;

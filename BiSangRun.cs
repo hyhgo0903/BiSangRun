@@ -21,7 +21,6 @@ namespace BiSangRun
     private int trialCount;
     private decimal maxTrialCount;
     private IntPtr processWindow;
-    private Rectangle imageRect;
     private readonly IReadOnlyList<ImageGameData> imageGameDataList;
     private bool initialize;
     private CancellationTokenSource token = new();
@@ -98,7 +97,6 @@ namespace BiSangRun
         return;
       }
 
-      this.SetImageRect();
       Task.Run(this.StartWhile);
     }
 
@@ -155,7 +153,17 @@ namespace BiSangRun
 
     private bool FindImage()
     {
-      ImageFinder.SetSource(ImageFinder.MakeScreenshot(this.imageRect));
+      GetWindowRect(this.processWindow, out var rect);
+      if (rect.Right - rect.Left != Constants.XWinSize)
+      {
+        this.SetLabel2TextSafe("창 크기가 변경되었음. 중지합니다", false);
+        this.initialize = false;
+        return true;
+      }
+
+      // 성능을 위해 필요 없는 부분 더 줄일 예정
+      var rectangle = Rectangle.FromLTRB(rect.Left + 400, rect.Top, rect.Right, rect.Bottom);
+      ImageFinder.SetSource(ImageFinder.MakeScreenshot(rectangle));
 
       foreach (var gameData in this.imageGameDataList)
       {
@@ -187,16 +195,17 @@ namespace BiSangRun
       this.token.Cancel();
     }
 
-    private void SetLabel2TextSafe(string txt)
+    private void SetLabel2TextSafe(string txt, bool append = true)
     {
-      var appendedTxt = $"{txt} {this.trialCount} / {this.maxTrialCount}";
+      var resultTxt = append ? $"{txt} {this.trialCount} / {this.maxTrialCount}" : txt;
+
       if (this.label2.InvokeRequired)
       {
-        this.label2.Invoke(new Action(() => this.label2.Text = appendedTxt));
+        this.label2.Invoke(new Action(() => this.label2.Text = resultTxt));
       }
       else
       {
-        this.label2.Text = appendedTxt;
+        this.label2.Text = resultTxt;
       }
     }
 
@@ -229,18 +238,10 @@ namespace BiSangRun
         return;
       }
 
-      this.SetImageRect();
       if (this.FindImage() is false)
       {
-        this.SetLabel2TextSafe(@"[Debug] 이미지 검색 되지 않음");
+        this.SetLabel2TextSafe(@"[Debug] 이미지 검색 되지 않음", false);
       }
-    }
-
-    private void SetImageRect()
-    {
-      GetWindowRect(this.processWindow, out var rect);
-      // 성능을 위해 최대한 줄인다
-      this.imageRect = Rectangle.FromLTRB(rect.Left + 400, rect.Top, rect.Right, rect.Bottom);
     }
   }
 }
