@@ -2,6 +2,7 @@ using BiSangRun.GameData;
 using BiSangRun.Utility;
 using ImageFinderNS;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 
@@ -50,7 +51,7 @@ namespace BiSangRun
       speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void initializeButton_Click(object sender, EventArgs e)
     {
       // Pc런처 기준임
       var processes = Process.GetProcessesByName("EpicSeven");
@@ -89,7 +90,7 @@ namespace BiSangRun
       this.label1.Text = @"초기화 완료. 에픽세븐 창 크기를 바꾸지 말 것 (다시 초기화 필요)";
     }
 
-    private void button2_Click(object sender, EventArgs e)
+    private void startButton_Click(object sender, EventArgs e)
     {
       if (this.initialize is false)
       {
@@ -115,7 +116,7 @@ namespace BiSangRun
           return;
         }
 
-        this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창을 옮기거나 마우스오버하지 말 것!");
+        this.SetLabel2TextSafe(@"실행 중... 에픽세븐 창 마우스오버하지 말 것!");
         Thread.Sleep(10);
         this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
 
@@ -151,7 +152,7 @@ namespace BiSangRun
       SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
     }
 
-    private bool FindImage()
+    private bool FindImage(bool debug = false)
     {
       GetWindowRect(this.processWindow, out var rect);
       if (rect.Right - rect.Left != Constants.XWinSize)
@@ -161,9 +162,14 @@ namespace BiSangRun
         return true;
       }
 
-      // 성능을 위해 필요 없는 부분 더 줄일 예정
-      var rectangle = Rectangle.FromLTRB(rect.Left + 400, rect.Top, rect.Right, rect.Bottom);
-      ImageFinder.SetSource(ImageFinder.MakeScreenshot(rectangle));
+      var rectangle = Rectangle.FromLTRB(rect.Left + 425, rect.Top + 75, rect.Right, rect.Bottom);
+      var screenshot = ImageFinder.MakeScreenshot(rectangle);
+      if (debug)
+      {
+        screenshot.Save("Resources/디버그용.BMP", ImageFormat.Bmp);
+      }
+
+      ImageFinder.SetSource(screenshot);
 
       foreach (var gameData in this.imageGameDataList)
       {
@@ -190,7 +196,7 @@ namespace BiSangRun
       return false;
     }
 
-    private void button3_Click(object sender, EventArgs e)
+    private void stopButton_Click(object sender, EventArgs e)
     {
       this.token.Cancel();
     }
@@ -209,7 +215,7 @@ namespace BiSangRun
       }
     }
 
-    private void button4_Click(object sender, EventArgs e)
+    private void releaseTopButton_Click(object sender, EventArgs e)
     {
       if (this.initialize is false)
       {
@@ -226,7 +232,7 @@ namespace BiSangRun
         Constants.NoMove | Constants.NoSize);
     }
 
-    private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+    private void maximumNumericUpDown_ValueChanged(object sender, EventArgs e)
     {
       this.maxTrialCount = this.maximumNumericUpDown.Value;
     }
@@ -238,7 +244,7 @@ namespace BiSangRun
         return;
       }
 
-      if (this.FindImage() is false)
+      if (this.FindImage(true) is false)
       {
         this.SetLabel2TextSafe(@"[Debug] 이미지 검색 되지 않음", false);
       }

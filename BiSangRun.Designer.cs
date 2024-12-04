@@ -51,7 +51,7 @@
       this.initializeButton.TabIndex = 1;
       this.initializeButton.Text = "초기화";
       this.initializeButton.UseVisualStyleBackColor = true;
-      this.initializeButton.Click += this.button1_Click;
+      this.initializeButton.Click += this.initializeButton_Click;
       // 
       // startButton
       // 
@@ -61,7 +61,7 @@
       this.startButton.TabIndex = 2;
       this.startButton.Text = "실행";
       this.startButton.UseVisualStyleBackColor = true;
-      this.startButton.Click += this.button2_Click;
+      this.startButton.Click += this.startButton_Click;
       // 
       // label1
       // 
@@ -88,7 +88,7 @@
       this.stopButton.TabIndex = 5;
       this.stopButton.Text = "중지";
       this.stopButton.UseVisualStyleBackColor = true;
-      this.stopButton.Click += this.button3_Click;
+      this.stopButton.Click += this.stopButton_Click;
       // 
       // releaseTopButton
       // 
@@ -98,7 +98,7 @@
       this.releaseTopButton.TabIndex = 6;
       this.releaseTopButton.Text = "항상 위 해제";
       this.releaseTopButton.UseVisualStyleBackColor = true;
-      this.releaseTopButton.Click += this.button4_Click;
+      this.releaseTopButton.Click += this.releaseTopButton_Click;
       // 
       // maximumNumericUpDown
       // 
@@ -110,7 +110,7 @@
       this.maximumNumericUpDown.Size = new Size(75, 23);
       this.maximumNumericUpDown.TabIndex = 7;
       this.maximumNumericUpDown.Value = new decimal(new int[] { 30, 0, 0, 0 });
-      this.maximumNumericUpDown.ValueChanged += this.numericUpDown1_ValueChanged;
+      this.maximumNumericUpDown.ValueChanged += this.maximumNumericUpDown_ValueChanged;
       // 
       // maximumLabel
       // 
