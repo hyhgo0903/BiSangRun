@@ -1,18 +1,9 @@
-﻿namespace BiSangRun.GameData
-{
-  internal class ImageGameData
-  {
-    public ImageGameData(string path, string name, float similarity, bool canSkip)
-    {
-      this.Image = Image.FromFile(path);
-      this.Name = name;
-      this.Similarity = similarity;
-      this.CanSkip = canSkip;
-    }
+﻿namespace BiSangRun.GameData;
 
-    public Image Image { get; }
-    public string Name { get; }
-    public float Similarity { get; }
-    public bool CanSkip { get; }
-  }
+internal class ImageGameData(string path, string name, float similarity, bool canSkip)
+{
+  public Image Image { get; } = Image.FromFile(path);
+  public string Name { get; } = name;
+  public float Similarity { get; } = similarity;
+  public bool CanSkip { get; } = canSkip;
 }
