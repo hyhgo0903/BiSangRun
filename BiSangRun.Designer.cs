@@ -39,6 +39,7 @@ partial class BiSangRun
     this.mainPictureBox = new PictureBox();
     this.includeCheckBox = new CheckBox();
     this.soundCheckBox = new CheckBox();
+    this.autoPurchaseCheckBox = new CheckBox();
     ((System.ComponentModel.ISupportInitialize)this.maximumNumericUpDown).BeginInit();
     ((System.ComponentModel.ISupportInitialize)this.mainPictureBox).BeginInit();
     this.SuspendLayout();
@@ -133,8 +134,6 @@ partial class BiSangRun
     // includeCheckBox
     // 
     this.includeCheckBox.AutoSize = true;
-    this.includeCheckBox.Checked = true;
-    this.includeCheckBox.CheckState = CheckState.Checked;
     this.includeCheckBox.Location = new Point(285, 157);
     this.includeCheckBox.Name = "includeCheckBox";
     this.includeCheckBox.Size = new Size(80, 19);
@@ -147,18 +146,31 @@ partial class BiSangRun
     this.soundCheckBox.AutoSize = true;
     this.soundCheckBox.Checked = true;
     this.soundCheckBox.CheckState = CheckState.Checked;
-    this.soundCheckBox.Location = new Point(285, 182);
+    this.soundCheckBox.Location = new Point(385, 182);
     this.soundCheckBox.Name = "soundCheckBox";
     this.soundCheckBox.Size = new Size(62, 19);
     this.soundCheckBox.TabIndex = 11;
     this.soundCheckBox.Text = "사운드";
     this.soundCheckBox.UseVisualStyleBackColor = true;
     // 
+    // autoPurchaseCheckBox
+    // 
+    this.autoPurchaseCheckBox.AutoSize = true;
+    this.autoPurchaseCheckBox.Checked = true;
+    this.autoPurchaseCheckBox.CheckState = CheckState.Checked;
+    this.autoPurchaseCheckBox.Location = new Point(385, 157);
+    this.autoPurchaseCheckBox.Name = "autoPurchaseCheckBox";
+    this.autoPurchaseCheckBox.Size = new Size(74, 19);
+    this.autoPurchaseCheckBox.TabIndex = 12;
+    this.autoPurchaseCheckBox.Text = "자동 구매";
+    this.autoPurchaseCheckBox.UseVisualStyleBackColor = true;
+    // 
     // BiSangRun
     // 
     AutoScaleDimensions = new SizeF(7F, 15F);
     AutoScaleMode = AutoScaleMode.Font;
-    ClientSize = new Size(690, 213);
+    ClientSize = new Size(690, 223);
+    Controls.Add(this.autoPurchaseCheckBox);
     Controls.Add(this.soundCheckBox);
     Controls.Add(this.includeCheckBox);
     Controls.Add(this.mainPictureBox);
@@ -190,4 +202,5 @@ partial class BiSangRun
   private PictureBox mainPictureBox;
   private CheckBox includeCheckBox;
   private CheckBox soundCheckBox;
+  private CheckBox autoPurchaseCheckBox;
 }

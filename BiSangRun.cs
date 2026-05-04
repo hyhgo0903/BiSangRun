@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 
 namespace BiSangRun;
+
 public partial class BiSangRun : Form
 {
   [DllImport("user32.dll")]
@@ -19,10 +20,13 @@ public partial class BiSangRun : Form
   private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
   private int trialCount;
+  private int covenantPurchaseCount;
+  private int mysticPurchaseCount;
   private decimal maxTrialCount;
   private IntPtr processWindow;
   private readonly IReadOnlyList<ImageGameData> imageGameDataList;
   private bool initialize;
+  private bool isRunning;
   private CancellationTokenSource token = new();
   private readonly SpeechSynthesizer speechSynthesizer;
 
@@ -30,40 +34,34 @@ public partial class BiSangRun : Form
   {
     this.InitializeComponent();
     this.maxTrialCount = this.maximumNumericUpDown.Value;
-    this.mainPictureBox.Image = Image.FromFile("Resources/¥Î±‚»≠∏È.PNG");
+    this.mainPictureBox.Image = Image.FromFile("Resources/ÎåÄÍ∏∞ÌôîÎ©¥.PNG");
 
-    var imageList = new[]
-    {
-        new ImageGameData("Resources/º∫æ‡.PNG", "º∫æ‡", 0.8f, false),
-        new ImageGameData("Resources/Ω≈∫Ò.PNG", "Ω≈∫Ò", 0.8f, false),
-        // ¿Ã∞≈ «œ≥™ ∞Æ∞Ì ¡¶¥Î∑Œ æ» √£æ∆¡ÿ¥Ÿ ¿œ¥‹¿∫ «•∫ª 2∞≥∑Œ «ÿ∫Ω
-        new ImageGameData("Resources/85¡¶¿Â∫Ò.PNG", "85¡¶¿Â∫Ò", 0.94f, true),
-        new ImageGameData("Resources/85¡¶¿Â∫Ò2.PNG", "85¡¶¿Â∫Ò", 0.94f, true),
-      };
-
-    this.imageGameDataList = imageList;
+    this.imageGameDataList =
+    [
+      new ImageGameData("Resources/ÏÑ±ÏïΩ.PNG", "ÏÑ±ÏïΩ", 0.8f, false, ShopItemType.CovenantBookmark),
+      new ImageGameData("Resources/Ïã†ÎπÑ.PNG", "Ïã†ÎπÑ", 0.8f, false, ShopItemType.MysticMedal),
+      new ImageGameData("Resources/85Ï†úÏû•ÎπÑ.PNG", "85Ï†úÏû•ÎπÑ", 0.94f, true, ShopItemType.Equipment85),
+      new ImageGameData("Resources/85Ï†úÏû•ÎπÑ2.PNG", "85Ï†úÏû•ÎπÑ", 0.94f, true, ShopItemType.Equipment85),
+    ];
 
     this.speechSynthesizer = new SpeechSynthesizer();
-    speechSynthesizer.SetOutputToDefaultAudioDevice();
-    speechSynthesizer.Volume = 100;
-    // «—±πæÓ ¡ˆø¯¿∫ Heami ∏∏ ∞°¥…, æ¯æÓµµ µ , ¿÷¿∏∏È ø¿∑˘ ≥™¥¬∞ÊøÏ∞° ¿÷¥¬∞≈ ∞∞¿Ω
-    speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
+    this.speechSynthesizer.SetOutputToDefaultAudioDevice();
+    this.speechSynthesizer.Volume = 100;
+    this.speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
   }
 
   private void initializeButton_Click(object sender, EventArgs e)
   {
-    // Pc∑±√≥ ±‚¡ÿ¿”
     var processes = Process.GetProcessesByName("EpicSeven");
     if (processes.Length != 1)
     {
-      this.label1.Text = @"«¡∑ŒººΩ∫ ∞ÀªˆΩ«∆–";
+      this.label1.Text = @"ÌîÑÎ°úÏÑ∏Ïä§ Í≤ÄÏÉâÏã§Ìå®";
       return;
     }
 
     var process = processes[0];
     this.processWindow = process.MainWindowHandle;
 
-    // ∆Ø¡§ «ÿªÛµµ∑Œ ∫Ø∞ÊΩ√≈¥
     SetWindowPos(
       this.processWindow,
       Constants.HWndTopmost,
@@ -76,123 +74,276 @@ public partial class BiSangRun : Form
     GetWindowRect(this.processWindow, out var rect);
     var processRect = Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom);
 
-    var checkImage = Image.FromFile("Resources/∫ÒªÛ»≠∏È√º≈©øÎ.PNG");
+    var checkImage = Image.FromFile("Resources/ÎπÑÏÉÅÌôîÎ©¥Ï≤¥ÌÅ¨Ïö©.PNG");
     ImageFinder.SetSource(ImageFinder.MakeScreenshot(processRect));
     var finds = ImageFinder.Find(checkImage, 0.8f);
     if (finds.Count < 1)
     {
-      this.label1.Text = @"√ ±‚»≠ Ω«∆–. ∫Òπ–ªÛ¡° »≠∏È¿Ã æ∆¥‘";
+      this.label1.Text = @"Ï¥àÍ∏∞Ìôî Ïã§Ìå®. ÎπÑÎ∞ÄÏÉÅÏ†ê ÌôîÎ©¥Ïù¥ ÏïÑÎãò";
       return;
     }
 
     this.initialize = true;
-    this.label1.Text = @"√ ±‚»≠ øœ∑·. ø°«»ºº∫Ï √¢ ≈©±‚∏¶ πŸ≤Ÿ¡ˆ ∏ª ∞Õ (¥ŸΩ√ √ ±‚»≠ « ø‰)";
+    this.label1.Text = @"Ï¥àÍ∏∞Ìôî ÏôÑÎ£å. ÎπÑÎ∞ÄÏÉÅÏ†ê Ï∞Ω ÌÅ¨Í∏∞Î•º Î∞îÍæ∏Î©¥ Ïïà Îê® (Îã§Ïãú Ï¥àÍ∏∞Ìôî ÌïÑÏöî)";
   }
 
   private void startButton_Click(object sender, EventArgs e)
   {
     if (this.initialize is false)
     {
-      this.SetLabel2TextSafe(@"√ ±‚»≠ ∫Œ≈Õ «ÿæﬂ «‘");
+      this.SetLabel2TextSafe(@"Ï¥àÍ∏∞Ìôî Î®ºÏ†Ä Ìï¥Ïïº Ìï®");
       return;
     }
 
-    Task.Run(this.StartWhile);
-  }
-
-  private void StartWhile()
-  {
-    this.token = new CancellationTokenSource();
-    this.trialCount = 0;
-
-    while (this.trialCount < this.maxTrialCount)
+    if (this.isRunning)
     {
-      ++this.trialCount;
-
-      if (this.token.IsCancellationRequested)
-      {
-        this.SetLabel2TextSafe(@"¡ﬂ¡ˆ µ .");
-        return;
-      }
-
-      this.SetLabel2TextSafe(@"Ω««‡ ¡ﬂ... ø°«»ºº∫Ï √¢ ∏∂øÏΩ∫ø¿πˆ«œ¡ˆ ∏ª ∞Õ!");
-      Thread.Sleep(10);
-      this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize);
-
-      Thread.Sleep(400);
-      this.SendMouseClick(Constants.DetermineXSize, Constants.DetermineYSize);
-
-      Thread.Sleep(600);
-      if (this.FindImage())
-      {
-        return;
-      }
-
-      SendMessage(this.processWindow, MouseOperations.Wheel, Constants.WParam, IntPtr.Zero);
-      Thread.Sleep(400);
-
-      if (this.FindImage())
-      {
-        return;
-      }
+      this.SetLabel2TextSafe(@"Ïù¥ÎØ∏ Ïã§Ìñâ Ï§ë", false);
+      return;
     }
 
-    this.SetLabel2TextSafe(@"Ω««‡ øœ∑·.");
+    var settings = this.CreateSearchSettings();
+    Task.Run(() => this.StartWhile(settings));
   }
 
-  private void SendMouseClick(int x, int y)
+  private void StartWhile(SearchSettings settings)
   {
-    // TODO ∏∂øÏΩ∫∞° ∞°≤˚ æ√«Ùº≠ ¥ı∫Ì≈¨∏Ø¿∏∑Œ «ﬂ¥¬µ• ±◊∑°µµ æ√»˙ ∂ß∞° ¿÷¿Ω ∞≥º± « ø‰
+    this.SetRunningStateSafe(true);
+    this.token = new CancellationTokenSource();
+    this.trialCount = 0;
+    this.covenantPurchaseCount = 0;
+    this.mysticPurchaseCount = 0;
+
+    try
+    {
+      while (this.trialCount < settings.MaxTrialCount)
+      {
+        ++this.trialCount;
+
+        if (this.token.IsCancellationRequested)
+        {
+          this.SetLabel2TextSafe(@"Ï§ëÏßÄ Îê®.");
+          return;
+        }
+
+        this.SetLabel2TextSafe(@"ÏÉàÎ°úÍ≥†Ïπ® Ï§ë... ÎπÑÎ∞ÄÏÉÅÏ†ê Ï∞Ω ÎßàÏö∞Ïä§Ï°∞ÏûëÌïòÎ©¥ Ïïà Îê®!");
+        Thread.Sleep(10);
+        this.SendMouseClick(Constants.RefreshXSize, Constants.RefreshYSize, doubleClick: true);
+
+        Thread.Sleep(400);
+        this.SendMouseClick(Constants.DetermineXSize, Constants.DetermineYSize, doubleClick: true);
+
+        Thread.Sleep(Constants.ShopRefreshSettleDelayMs);
+        if (this.ProcessVisibleItems(settings))
+        {
+          return;
+        }
+
+        SendMessage(this.processWindow, MouseOperations.Wheel, Constants.WParam, IntPtr.Zero);
+        Thread.Sleep(Constants.ShopScrollSettleDelayMs);
+
+        if (this.ProcessVisibleItems(settings))
+        {
+          return;
+        }
+      }
+
+      this.SetLabel2TextSafe(@"ÌÉêÏÉâ ÏôÑÎ£å.");
+    }
+    finally
+    {
+      this.SetRunningStateSafe(false);
+    }
+  }
+
+  private bool ProcessVisibleItems(SearchSettings settings)
+  {
+    for (var scanCount = 0; scanCount < Constants.MaxPurchaseScanCount; ++scanCount)
+    {
+      var foundItems = this.FindItems(settings);
+      if (foundItems.ScanStopped)
+      {
+        return true;
+      }
+
+      if (foundItems.Items.Count == 0)
+      {
+        return false;
+      }
+
+      if (settings.AutoPurchase is false)
+      {
+        this.NotifyFound(foundItems.Items[0], settings);
+        return true;
+      }
+
+      var equipment85 = foundItems.Items.FirstOrDefault(item => item.GameData.ItemType == ShopItemType.Equipment85);
+      if (equipment85 is not null)
+      {
+        this.NotifyFound(equipment85, settings);
+        return true;
+      }
+
+      var purchaseTargets = foundItems.Items
+        .Where(item => this.ShouldPurchase(item.GameData, settings))
+        .OrderBy(item => item.BuyY)
+        .ToList();
+
+      if (purchaseTargets.Count == 0)
+      {
+        return false;
+      }
+
+      var target = purchaseTargets[0];
+      if (this.token.IsCancellationRequested)
+      {
+        return true;
+      }
+
+      this.PurchaseAndVerify(target, settings);
+    }
+
+    this.SetLabel2TextSafe(@"Íµ¨Îß§ ÌõÑ Ïû¨ÌÉêÏÉâ Ï†úÌïú ÎèÑÎã¨. ÏïàÏ†ÑÏùÑ ÏúÑÌï¥ Ï§ëÏßÄ", false);
+    return true;
+  }
+
+  private bool PurchaseAndVerify(FoundShopItem target, SearchSettings settings)
+  {
+    this.SetLabel2TextSafe($"{target.GameData.Name} Íµ¨Îß§ ÏãúÎèÑ");
+    this.SendMouseClick(target.BuyX, target.BuyY, doubleClick: true);
+    Thread.Sleep(Constants.PurchasePopupDelayMs);
+    this.SendMouseClick(Constants.PurchaseConfirmX, Constants.PurchaseConfirmY, doubleClick: true);
+    Thread.Sleep(Constants.PurchaseCompleteDelayMs);
+
+    var verification = this.FindItems(settings);
+    if (verification.ScanStopped)
+    {
+      return false;
+    }
+
+    var stillVisible = verification.Items.Any(item => this.IsSameVisibleTarget(item, target));
+    if (stillVisible)
+    {
+      this.SetLabel2TextSafe($"{target.GameData.Name} Íµ¨Îß§ Ïû¨ÌôïÏù∏ ÌïÑÏöî");
+      return false;
+    }
+
+    this.AddPurchaseCount(target.GameData.ItemType);
+    return true;
+  }
+
+  private bool IsSameVisibleTarget(FoundShopItem item, FoundShopItem target)
+  {
+    return item.GameData.ItemType == target.GameData.ItemType
+      && Math.Abs(item.BuyY - target.BuyY) <= Constants.MatchDeduplicateYThreshold;
+  }
+
+  private void SendMouseClick(int x, int y, bool doubleClick = false)
+  {
     IntPtr lParam = ((y << 16) | (x & 0xFFFF));
     SendMessage(this.processWindow, MouseOperations.Move, IntPtr.Zero, lParam);
     SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
     SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
-    SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
-    SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
+
+    if (doubleClick)
+    {
+      SendMessage(this.processWindow, MouseOperations.LeftDown, IntPtr.Zero, lParam);
+      SendMessage(this.processWindow, MouseOperations.LeftUp, IntPtr.Zero, lParam);
+    }
   }
 
-  private bool FindImage(bool debug = false)
+  private SearchResult FindItems(SearchSettings settings, bool debug = false)
   {
     GetWindowRect(this.processWindow, out var rect);
-    if (rect.Right - rect.Left != Constants.XWinSize)
+    if ((rect.Right - rect.Left != Constants.XWinSize) || (rect.Bottom - rect.Top != Constants.YWinSize))
     {
-      this.SetLabel2TextSafe("√¢ ≈©±‚∞° ∫Ø∞Êµ«æ˙¿Ω. ¡ﬂ¡ˆ«’¥œ¥Ÿ", false);
+      this.SetLabel2TextSafe("Ï∞Ω ÌÅ¨Í∏∞Í∞Ä Î≥ÄÍ≤ΩÎêòÏóàÏùå. Ï§ëÏßÄÌï©ÎãàÎã§", false);
       this.initialize = false;
-      return true;
+      return SearchResult.Stopped;
     }
 
-    var rectangle = Rectangle.FromLTRB(rect.Left + 425, rect.Top + 75, rect.Right, rect.Bottom);
-    var screenshot = ImageFinder.MakeScreenshot(rectangle);
+    var rectangle = Rectangle.FromLTRB(
+      rect.Left + Constants.ShopSearchLeft,
+      rect.Top + Constants.ShopSearchTop,
+      rect.Right,
+      rect.Bottom);
+
+    using var screenshot = ImageFinder.MakeScreenshot(rectangle);
     if (debug)
     {
-      screenshot.Save("Resources/µπˆ±◊øÎ.BMP", ImageFormat.Bmp);
+      screenshot.Save("Resources/ÎîîÎ≤ÑÍ∑∏Ïö©.BMP", ImageFormat.Bmp);
     }
 
     ImageFinder.SetSource(screenshot);
+    var items = new List<FoundShopItem>();
 
     foreach (var gameData in this.imageGameDataList)
     {
-      if (this.includeCheckBox.Checked is false && gameData.CanSkip)
+      if (this.ShouldSearch(gameData, settings) is false)
       {
         continue;
       }
 
       var finds = ImageFinder.Find(gameData.Image, gameData.Similarity);
-      if (finds.Count > 0)
+      foreach (var find in finds)
       {
-        var text = @$"{gameData.Name} πﬂ∞ﬂ!";
-        this.SetLabel2TextSafe(text);
+        var centerY = Constants.ShopSearchTop + find.Zone.Top + (find.Zone.Height / 2);
+        var item = new FoundShopItem(
+          gameData,
+          find.Zone,
+          find.Similarity,
+          Constants.ShopBuyButtonCenterX,
+          centerY);
 
-        if (this.soundCheckBox.Checked)
-        {
-          this.speechSynthesizer.Speak(text);
-        }
-
-        return true;
+        this.AddDeduplicated(items, item);
       }
     }
 
-    return false;
+    return new SearchResult(false, items.OrderBy(item => item.BuyY).ToList());
+  }
+
+  private void AddDeduplicated(List<FoundShopItem> items, FoundShopItem item)
+  {
+    var sameItemIndex = items.FindIndex(existing =>
+      existing.GameData.ItemType == item.GameData.ItemType
+      && Math.Abs(existing.BuyY - item.BuyY) <= Constants.MatchDeduplicateYThreshold);
+
+    if (sameItemIndex < 0)
+    {
+      items.Add(item);
+      return;
+    }
+
+    if (item.Similarity > items[sameItemIndex].Similarity)
+    {
+      items[sameItemIndex] = item;
+    }
+  }
+
+  private bool ShouldSearch(ImageGameData gameData, SearchSettings settings)
+  {
+    return gameData.ItemType != ShopItemType.Equipment85 || settings.IncludeEquipment85;
+  }
+
+  private bool ShouldPurchase(ImageGameData gameData, SearchSettings settings)
+  {
+    return gameData.ItemType switch
+    {
+      ShopItemType.CovenantBookmark => true,
+      ShopItemType.MysticMedal => true,
+      ShopItemType.Equipment85 => false,
+      _ => false,
+    };
+  }
+
+  private void NotifyFound(FoundShopItem item, SearchSettings settings)
+  {
+    var text = @$"{item.GameData.Name} Î∞úÍ≤¨!";
+    this.SetLabel2TextSafe(text);
+
+    if (settings.Sound)
+    {
+      this.speechSynthesizer.Speak(text);
+    }
   }
 
   private void stopButton_Click(object sender, EventArgs e)
@@ -200,9 +351,25 @@ public partial class BiSangRun : Form
     this.token.Cancel();
   }
 
+  private void AddPurchaseCount(ShopItemType itemType)
+  {
+    switch (itemType)
+    {
+      case ShopItemType.CovenantBookmark:
+        ++this.covenantPurchaseCount;
+        break;
+      case ShopItemType.MysticMedal:
+        ++this.mysticPurchaseCount;
+        break;
+    }
+  }
+
   private void SetLabel2TextSafe(string txt, bool append = true)
   {
-    var resultTxt = append ? $"{txt} {this.trialCount} / {this.maxTrialCount}" : txt;
+    var purchaseCountText = $"Ïã†ÎπÑ {this.mysticPurchaseCount}Ìöå / ÏÑ±ÏïΩ {this.covenantPurchaseCount}Ìöå";
+    var resultTxt = append
+      ? $"{txt} {this.trialCount} / {this.maxTrialCount}{Environment.NewLine}{purchaseCountText}"
+      : txt;
 
     if (this.label2.InvokeRequired)
     {
@@ -212,6 +379,27 @@ public partial class BiSangRun : Form
     {
       this.label2.Text = resultTxt;
     }
+  }
+
+  private void SetRunningStateSafe(bool running)
+  {
+    if (this.startButton.InvokeRequired)
+    {
+      this.startButton.Invoke(new Action(() => this.SetRunningStateSafe(running)));
+      return;
+    }
+
+    this.isRunning = running;
+    this.startButton.Enabled = running is false;
+  }
+
+  private SearchSettings CreateSearchSettings()
+  {
+    return new SearchSettings(
+      this.maximumNumericUpDown.Value,
+      this.includeCheckBox.Checked,
+      this.soundCheckBox.Checked,
+      this.autoPurchaseCheckBox.Checked);
   }
 
   private void releaseTopButton_Click(object sender, EventArgs e)
@@ -243,9 +431,33 @@ public partial class BiSangRun : Form
       return;
     }
 
-    if (this.FindImage(true) is false)
+    var result = this.FindItems(this.CreateSearchSettings(), true);
+    if (result.Items.Count == 0)
     {
-      this.SetLabel2TextSafe(@"[Debug] ¿ÃπÃ¡ˆ ∞Àªˆ µ«¡ˆ æ ¿Ω", false);
+      this.SetLabel2TextSafe(@"[Debug] Ïù¥ÎØ∏ÏßÄ Í≤ÄÏÉâ Í≤∞Í≥º ÏóÜÏùå", false);
+      return;
     }
+
+    var text = string.Join(", ", result.Items.Select(item =>
+      $"{item.GameData.Name}(Y:{item.BuyY}, {item.Similarity:0.00})"));
+    this.SetLabel2TextSafe($"[Debug] {text}", false);
+  }
+
+  private sealed record SearchSettings(
+    decimal MaxTrialCount,
+    bool IncludeEquipment85,
+    bool Sound,
+    bool AutoPurchase);
+
+  private sealed record FoundShopItem(
+    ImageGameData GameData,
+    Rectangle MatchZone,
+    float Similarity,
+    int BuyX,
+    int BuyY);
+
+  private sealed record SearchResult(bool ScanStopped, IReadOnlyList<FoundShopItem> Items)
+  {
+    public static SearchResult Stopped { get; } = new(true, []);
   }
 }

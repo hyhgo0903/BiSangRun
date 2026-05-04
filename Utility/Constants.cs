@@ -12,6 +12,19 @@ public class Constants
   public const int DetermineXSize = 600;
   public const int DetermineYSize = 350;
 
+  public const int ShopSearchLeft = 425;
+  public const int ShopSearchTop = 75;
+  public const int ShopBuyButtonRightPadding = 94;
+  public static int ShopBuyButtonCenterX => XWinSize - ShopBuyButtonRightPadding;
+  public const int PurchaseConfirmX = 645;
+  public const int PurchaseConfirmY = 422;
+  public const int PurchasePopupDelayMs = 800;
+  public const int PurchaseCompleteDelayMs = 3000;
+  public const int ShopRefreshSettleDelayMs = 1000;
+  public const int ShopScrollSettleDelayMs = 1000;
+  public const int MatchDeduplicateYThreshold = 18;
+  public const int MaxPurchaseScanCount = 10;
+
   public const IntPtr WParam = (-400 & 0xFFFF) << 16;
 
   // 항상 위로
