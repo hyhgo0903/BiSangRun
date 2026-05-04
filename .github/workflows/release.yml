@@ -25,9 +25,17 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o ./publish
 
+      - name: Create zip archive
+        run: |
+          cd ./publish
+          Compress-Archive -Path * -DestinationPath ../BiSangRun.zip
+          cd ..
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./publish/BiSangRun.exe
+          files: |
+            ./publish/BiSangRun.exe
+            ./BiSangRun.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
